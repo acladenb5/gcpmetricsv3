@@ -9,7 +9,10 @@ install:
 - ./build.sh
 - sudo pip install --upgrade pip
 - sudo pip install -r requirements.txt
-script: python setup.py flake8
+script: 
+  - pylint *.py gcpmetricsv3/*.py
+  - pycodestyle *.py gcpmetricsv3/*.py
+  - flake8 *.py gcpmetricsv3/*.py
 deploy:
   skip_cleanup: true
   provider: pypi
