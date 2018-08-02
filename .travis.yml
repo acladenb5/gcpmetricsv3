@@ -6,9 +6,10 @@ python:
 - '3.6'
 install:
 - python -V
-- ./build.sh
-- sudo pip install --upgrade pip
-- sudo pip install -r requirements.txt
+#- ./build.sh
+#- sudo pip install --upgrade pip
+#- sudo pip install -r requirements.txt
+- pip  install -r requirements.txt
 script: 
   - pylint *.py gcpmetricsv3/*.py
   - flake8 *.py gcpmetricsv3/*.py
