@@ -1,3 +1,5 @@
+notifications:
+  slack: purplespark:eqNe74uDuLCEl8iewXbKExRN
 language: python
 branches:
   only:
