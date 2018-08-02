@@ -1,13 +1,3 @@
-astroid
 flake8
-isort
-lazy-object-proxy
-mccabe
-pkg-resources
 pycodestyle
-pyflakes
 pylint
-six
-typed-ast
-typing
-wrapt
