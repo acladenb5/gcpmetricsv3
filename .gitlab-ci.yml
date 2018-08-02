@@ -1,0 +1,12 @@
+image: python/latest
+before_script:
+  - python -V
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+test:
+  script:
+    - pylint *.py gcpmetricsv3/*.py
+    - pycodestyle *.py gcpmetricsv3/*.py
+    - flake8 *.py gcpmetricsv3/*.py
+    - python setup.py sdist
+    - python setp.oy install
