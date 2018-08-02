@@ -5,7 +5,9 @@ branches:
 python:
 - '3.5'
 install:
+- python -V
 - ./build.sh
+- sudo pip install --upgrade pip
 - sudo pip install -r requirements.txt
 script: python setup.py flake8
 deploy:
