@@ -3,7 +3,7 @@ branches:
   only:
   - master
 python:
-- '3.5'
+- '3.6'
 install:
 - python -V
 - ./build.sh
