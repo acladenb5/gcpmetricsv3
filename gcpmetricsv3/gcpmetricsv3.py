@@ -3,10 +3,12 @@ import os
 import sys
 # import time
 import argparse
-# from google.cloud import monitoring_v3
+from google.cloud import monitoring_v3
 # from google.cloud.monitoring_v3 import query
 
 # pylint: disable-msg=line-too-long
+# pylint: disable-msg=too-many-arguments
+# pylint: disable-msg=too-many-locals
 
 
 PARSER = argparse.ArgumentParser(
@@ -56,6 +58,60 @@ def version():
     return ver.strip()
 
 
+def list_resource_descriptors(client):
+    """List the resource descriptors."""
+    print(client)
+    return 0
+
+
+def list_metric_descriptors(client):
+    """List the metrics."""
+    print(client)
+    return 0
+
+
+def perform_query(client, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00):
+    """Perform a query."""
+    print(client, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00)
+    return 0
+
+
+def process(project_id, list_resources, list_metrics, query, metric_id, days, hours, minutes,
+            resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
+    """Process the request."""
+
+    if not project_id:
+        error('--project not specified')
+
+    client = monitoring_v3.MetricServiceClient()
+    client.project_path(project_id)
+
+    if list_resources:
+        list_resource_descriptors(client)
+
+    elif list_metrics:
+        list_metric_descriptors(client)
+
+    elif query:
+        perform_query(client, metric_id, days, hours, minutes,
+                      resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00)
+
+    else:
+        error('No operation specified. Please choose one of --list-resources, --list-metrics, --query')
+
+
+def process_filter(_filter):
+    """Process the filters."""
+    if not _filter:
+        return None
+    _filter = _filter.split(',')
+    _ret = {}
+    for res in _filter:
+        key, value = res.split(':')
+        _ret[key] = value
+    return _ret
+
+
 def main():
     """Main routine."""
     args_dict = vars(PARSER.parse_args())
@@ -63,6 +119,27 @@ def main():
     if args_dict['version']:
         print(version())
         return 0
+
+    # data re-formatting for simpler use going forward
+    resource_filter = process_filter(args_dict['resource_filter'])
+    metric_filter = process_filter(args_dict['metric_filter'])
+
+    process(
+        args_dict['project'],
+        args_dict['list_resources'],
+        args_dict['list_metrics'],
+        args_dict['query'],
+        args_dict['metric'],
+        int(args_dict['days']),
+        int(args_dict['hours']),
+        int(args_dict['minutes']),
+        resource_filter,
+        metric_filter,
+        args_dict['align'],
+        args_dict['reduce'],
+        args_dict['reduce_grouping'],
+        args_dict['iloc00']
+    )
     return 0
 
 
