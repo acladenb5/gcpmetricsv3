@@ -10,7 +10,7 @@ import argparse
 
 
 PARSER = argparse.ArgumentParser(
-    description='Google Cloud Monitoring API Command Line\nWebsite: https://github.com/odin-public/gcpmetrics',
+    description='Google Cloud Monitoring API Command Line\nWebsite: https://github.com/acladenb5/gcpmetricsv3',
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
 
@@ -64,3 +64,7 @@ def main():
         print(version())
         return 0
     return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
