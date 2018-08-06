@@ -10,7 +10,7 @@ import argparse
 
 
 PARSER = argparse.ArgumentParser(
-    description='Google Cloud Monitoring API Command Line',
+    description='Google Cloud Monitoring API Command Line\nWebsite: https://github.com/odin-public/gcpmetrics',
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
 
