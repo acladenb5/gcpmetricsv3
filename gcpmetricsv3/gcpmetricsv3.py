@@ -1,5 +1,5 @@
 """Main application."""
-# import os
+import os
 import sys
 # import time
 import argparse
@@ -7,6 +7,7 @@ import argparse
 # from google.cloud.monitoring_v3 import query
 
 # pylint: disable-msg=line-too-long
+
 
 PARSER = argparse.ArgumentParser(
     description='Google Cloud Monitoring API Command Line',
@@ -43,3 +44,23 @@ def error(message):
     print()
     PARSER.print_help()
     sys.exit(1)
+
+
+def version():
+    """Print version."""
+    _path = os.path.split(os.path.abspath(__file__))[0]
+    _file = os.path.join(_path, './VERSION')
+    fversion = open(_file, 'r')
+    ver = fversion.read()
+    fversion.close()
+    return ver.strip()
+
+
+def main():
+    """Main routine."""
+    args_dict = vars(PARSER.parse_args())
+
+    if args_dict['version']:
+        print(version())
+        return 0
+    return 0
