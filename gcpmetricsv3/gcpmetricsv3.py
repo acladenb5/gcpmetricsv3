@@ -5,6 +5,8 @@ import sys
 import argparse
 import pprint
 from google.cloud import monitoring_v3
+# from google.cloud.monitoring_v3 import types as v3types
+from google.cloud.monitoring_v3 import query
 # from google.cloud.monitoring_v3 import enums
 from google.oauth2 import service_account
 # from google.cloud.monitoring_v3 import query
@@ -12,6 +14,7 @@ from google.oauth2 import service_account
 # pylint: disable-msg=line-too-long
 # pylint: disable-msg=too-many-arguments
 # pylint: disable-msg=too-many-locals
+# pylint: disable-msg=broad-except
 
 
 PARSER = argparse.ArgumentParser(
@@ -84,13 +87,36 @@ def list_metric_descriptors(client, project):
     return 0
 
 
-def perform_query(client, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00):
+def perform_query(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00):
     """Perform a query."""
-    print(client, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00)
+    print('----------')
+    print(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00)
+    print('----------')
+    if (days + hours + minutes) == 0:
+        error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
+    if not metric_id:
+        error('Metric ID is required for query, please use --metric')
+
+    # interval = monitoring_v3.types.TimeInterval
+    # interval = v3types.duration_pb2
+    # now = time.time()
+    # interval.end_time.seconds = int(now)
+    # interval.end_time.nanos = int((now - interval.end_time.seconds) * 10**9)
+    # interval.start_time.seconds = int(now - 60)
+    # interval.start_time.nanos = interval.end_time.nanos
+    req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
+    try:
+        dataframe = req.as_dataframe()
+        print(dataframe)
+    except Exception as exc:
+        print(type(exc))
+        print(exc)
+        print('Permission denied or Metric does not exist: {}'.format(metric_id))
+        exit(-1)
     return 0
 
 
-def process(keyfile, project_id, list_resources, list_metrics, query, metric_id, days, hours, minutes,
+def process(keyfile, project_id, list_resources, list_metrics, request, metric_id, days, hours, minutes,
             resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Process the request."""
 
@@ -111,8 +137,8 @@ def process(keyfile, project_id, list_resources, list_metrics, query, metric_id,
     elif list_metrics:
         list_metric_descriptors(client, project)
 
-    elif query:
-        perform_query(client, metric_id, days, hours, minutes,
+    elif request:
+        perform_query(client, project, metric_id, days, hours, minutes,
                       resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00)
 
     else:
