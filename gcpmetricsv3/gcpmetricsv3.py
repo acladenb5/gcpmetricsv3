@@ -1,7 +1,7 @@
 """Main application."""
 import os
 import sys
-# import time
+import datetime
 import argparse
 import pprint
 from google.cloud import monitoring_v3
@@ -15,6 +15,7 @@ from google.oauth2 import service_account
 # pylint: disable-msg=too-many-arguments
 # pylint: disable-msg=too-many-locals
 # pylint: disable-msg=broad-except
+# pylint: disable-msg=too-many-branches
 
 
 PARSER = argparse.ArgumentParser(
@@ -87,10 +88,10 @@ def list_metric_descriptors(client, project):
     return 0
 
 
-def perform_query(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00):
+def perform_query(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Perform a query."""
     print('----------')
-    print(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, grouping, iloc00)
+    print(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00)
     print('----------')
     if (days + hours + minutes) == 0:
         error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
@@ -105,14 +106,50 @@ def perform_query(client, project, metric_id, days, hours, minutes, resource_fil
     # interval.start_time.seconds = int(now - 60)
     # interval.start_time.nanos = interval.end_time.nanos
     req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
-    try:
-        dataframe = req.as_dataframe()
+
+    if resource_filter:
+        req = req.select_resources(**resource_filter)
+
+    if metric_filter:
+        req = req.select_metrics(**metric_filter)
+
+    if align:
+        delta = datetime.timedelta(days=days, hours=hours, minutes=minutes)
+        seconds = delta.total_seconds()
+        if not iloc00:
+            print('ALIGN: {} seconds: {}'.format(align, seconds))
+        req = req.align(align, seconds=seconds)
+
+    if reduce:
+        if not iloc00:
+            print('REDUCE: {} grouping: {}'.format(reduce, reduce_grouping))
+            if reduce_grouping:
+                req = req.reduce(reduce, *reduce_grouping)
+            else:
+                req = req.reduce(reduce)
+    if not iloc00:
+        print('QUERY: {}'.format(req.filter))
+
+    dataframe = req.as_dataframe()
+    print(dataframe)
+
+    if iloc00:
+        dflen = len(dataframe)
+        if not dflen:
+            # No dataset = 0
+            print('0')
+        else:
+            # assert len(dataframe) == 1
+            # assert len(dataframe.iloc[0]) == 1
+            print(dataframe.iloc[0, 0])
+    else:
         print(dataframe)
-    except Exception as exc:
-        print(type(exc))
-        print(exc)
-        print('Permission denied or Metric does not exist: {}'.format(metric_id))
-        exit(-1)
+
+    # except Exception as exc:
+    #     print(type(exc))
+    #     print(exc)
+    #     print('Permission denied or Metric does not exist: {}'.format(metric_id))
+    #     exit(-1)
     return 0
 
 
