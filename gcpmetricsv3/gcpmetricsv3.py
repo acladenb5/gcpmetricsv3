@@ -18,7 +18,7 @@ PARSER = argparse.ArgumentParser(
 
 PARSER.add_argument('--version', default=None, action='store_true', help='Print gcpmetics version and exit.')
 PARSER.add_argument('--init-config', help='Location of configuration files.', metavar='DIR')
-PARSER.add_argument('--config', help='Local configuration *.yaml file to be used.', metavar='FILE')
+# PARSER.add_argument('--config', help='Local configuration *.yaml file to be used.', metavar='FILE')
 PARSER.add_argument('--keyfile', help='Goolge Cloud Platform service account key file.', metavar='FILE')
 PARSER.add_argument('--preset', help='Preset ID, like http_response_5xx_sum, etc.', metavar='ID')
 PARSER.add_argument('--project', help='Project ID.', metavar='ID')
@@ -76,14 +76,18 @@ def perform_query(client, metric_id, days, hours, minutes, resource_filter, metr
     return 0
 
 
-def process(project_id, list_resources, list_metrics, query, metric_id, days, hours, minutes,
+def process(keyfile, project_id, list_resources, list_metrics, query, metric_id, days, hours, minutes,
             resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Process the request."""
 
     if not project_id:
         error('--project not specified')
 
-    client = monitoring_v3.MetricServiceClient()
+    if not keyfile:
+        client = monitoring_v3.MetricServiceClient()
+    else:
+        client = monitoring_v3.MetricServiceClient(credentials=keyfile)
+
     client.project_path(project_id)
 
     if list_resources:
@@ -125,6 +129,8 @@ def main():
     metric_filter = process_filter(args_dict['metric_filter'])
 
     process(
+        args_dict['keyfile'],
+        # args_dict['config'],
         args_dict['project'],
         args_dict['list_resources'],
         args_dict['list_metrics'],
