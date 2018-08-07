@@ -4,6 +4,7 @@ import sys
 # import time
 import argparse
 from google.cloud import monitoring_v3
+from google.oauth2 import service_account
 # from google.cloud.monitoring_v3 import query
 
 # pylint: disable-msg=line-too-long
@@ -58,15 +59,28 @@ def version():
     return ver.strip()
 
 
-def list_resource_descriptors(client):
+def list_resource_descriptors(client, project):
     """List the resource descriptors."""
-    print(client)
+    print(client, project)
     return 0
 
 
-def list_metric_descriptors(client):
+def list_metric_descriptors(client, project):
     """List the metrics."""
-    print(client)
+    # print(client, project)
+    print('Defined metric descriptors:')
+    index = 0
+    for descriptor in client.list_metric_descriptors(project):
+        index += 1
+        print('Metric descriptor #{}'.format(index))
+        print('\tname: {}'.format(descriptor.name))
+        print('\ttype: {}'.format(descriptor.type))
+        print('\tmetric_kind: {}'.format(descriptor.metric_kind))
+        print('\tvalue_type: {}'.format(descriptor.value_type))
+        print('\tunit: {}'.format(descriptor.unit))
+        print('\tdisplay_name: {}'.format(descriptor.display_name))
+        print('\tdescription: {}'.format(descriptor.description.encode('utf-8')))
+        print()
     return 0
 
 
@@ -86,15 +100,16 @@ def process(keyfile, project_id, list_resources, list_metrics, query, metric_id,
     if not keyfile:
         client = monitoring_v3.MetricServiceClient()
     else:
-        client = monitoring_v3.MetricServiceClient(credentials=keyfile)
+        credentials = service_account.Credentials.from_service_account_file(keyfile)
+        client = monitoring_v3.MetricServiceClient(credentials=credentials)
 
-    client.project_path(project_id)
+    project = client.project_path(project_id)
 
     if list_resources:
-        list_resource_descriptors(client)
+        list_resource_descriptors(client, project)
 
     elif list_metrics:
-        list_metric_descriptors(client)
+        list_metric_descriptors(client, project)
 
     elif query:
         perform_query(client, metric_id, days, hours, minutes,
