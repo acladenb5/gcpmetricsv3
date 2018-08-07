@@ -3,7 +3,9 @@ import os
 import sys
 # import time
 import argparse
+import pprint
 from google.cloud import monitoring_v3
+# from google.cloud.monitoring_v3 import enums
 from google.oauth2 import service_account
 # from google.cloud.monitoring_v3 import query
 
@@ -61,25 +63,23 @@ def version():
 
 def list_resource_descriptors(client, project):
     """List the resource descriptors."""
-    print(client, project)
+    print('Monitored resource descriptors:')
+    index = 0
+    for descriptor in client.list_monitored_resource_descriptors(project):
+        index += 1
+        print('Resource descriptor #{}'.format(index))
+        print(format(pprint.pformat(descriptor)))
     return 0
 
 
 def list_metric_descriptors(client, project):
     """List the metrics."""
-    # print(client, project)
     print('Defined metric descriptors:')
     index = 0
     for descriptor in client.list_metric_descriptors(project):
         index += 1
         print('Metric descriptor #{}'.format(index))
-        print('\tname: {}'.format(descriptor.name))
-        print('\ttype: {}'.format(descriptor.type))
-        print('\tmetric_kind: {}'.format(descriptor.metric_kind))
-        print('\tvalue_type: {}'.format(descriptor.value_type))
-        print('\tunit: {}'.format(descriptor.unit))
-        print('\tdisplay_name: {}'.format(descriptor.display_name))
-        print('\tdescription: {}'.format(descriptor.description.encode('utf-8')))
+        print(format(pprint.pformat(descriptor)))
         print()
     return 0
 
