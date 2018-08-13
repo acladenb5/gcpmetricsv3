@@ -9,7 +9,6 @@ from google.cloud import monitoring_v3
 from google.cloud.monitoring_v3 import query
 # from google.cloud.monitoring_v3 import enums
 from google.oauth2 import service_account
-# from google.cloud.monitoring_v3 import query
 
 # pylint: disable-msg=line-too-long
 # pylint: disable-msg=too-many-arguments
@@ -130,9 +129,9 @@ def _build_label_filter(category, *args, **kwargs):
 
 def perform_query(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Perform a query."""
-    print('----------')
-    print(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00)
-    print('----------')
+    # print('----------')
+    # print(metric_id)
+    # print('----------')
     if (days + hours + minutes) == 0:
         error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
     if not metric_id:
