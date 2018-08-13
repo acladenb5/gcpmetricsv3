@@ -5,9 +5,7 @@ import datetime
 import argparse
 import pprint
 from google.cloud import monitoring_v3
-# from google.cloud.monitoring_v3 import types as v3types
 from google.cloud.monitoring_v3 import query
-# from google.cloud.monitoring_v3 import enums
 from google.oauth2 import service_account
 
 # pylint: disable-msg=line-too-long
@@ -15,7 +13,6 @@ from google.oauth2 import service_account
 # pylint: disable-msg=too-many-locals
 # pylint: disable-msg=broad-except
 # pylint: disable-msg=too-many-branches
-# pylint: disable-msg=protected-access
 
 
 PARSER = argparse.ArgumentParser(
@@ -88,64 +85,13 @@ def list_metric_descriptors(client, project):
     return 0
 
 
-def _build_label_filter(category, *args, **kwargs):
-    """Construct a filter string to filter on metric or resource labels."""
-    terms = list(args)
-    import six
-    for key, value in six.iteritems(kwargs):
-        if value is None:
-            continue
-
-        suffix = None
-        ends = ['_prefix', '_suffix', '_greater', '_greaterequal',
-                '_less', '_lessequal']
-        if key.endswith(tuple(ends)):
-            key, suffix = key.rsplit('_', 1)
-
-        if category == 'resource' and key == 'resource_type':
-            key = 'resource.type'
-        else:
-            key = '.'.join((category, 'label', key))
-
-        if suffix == 'prefix':
-            term = '{key} = starts_with("{value}")'
-        elif suffix == 'suffix':
-            term = '{key} = ends_with("{value}")'
-        elif suffix == 'greater':
-            term = '{key} > {value}'
-        elif suffix == 'greaterequal':
-            term = '{key} >= {value}'
-        elif suffix == 'less':
-            term = '{key} < {value}'
-        elif suffix == 'lessequal':
-            term = '{key} <= {value}'
-        else:
-            term = '{key} = "{value}"'
-
-        terms.append(term.format(key=key, value=value))
-
-    return ' AND '.join(sorted(terms))
-
-
 def perform_query(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Perform a query."""
-    # print('----------')
-    # print(metric_id)
-    # print('----------')
     if (days + hours + minutes) == 0:
         error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
     if not metric_id:
         error('Metric ID is required for query, please use --metric')
 
-    query._build_label_filter = _build_label_filter
-
-    # interval = monitoring_v3.types.TimeInterval
-    # interval = v3types.duration_pb2
-    # now = time.time()
-    # interval.end_time.seconds = int(now)
-    # interval.end_time.nanos = int((now - interval.end_time.seconds) * 10**9)
-    # interval.start_time.seconds = int(now - 60)
-    # interval.start_time.nanos = interval.end_time.nanos
     req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
 
     if resource_filter:
