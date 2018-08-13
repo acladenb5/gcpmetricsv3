@@ -172,7 +172,6 @@ def perform_query(client, project, metric_id, days, hours, minutes, resource_fil
         print('QUERY: {}'.format(req.filter))
 
     dataframe = req.as_dataframe()
-    print(dataframe)
 
     if iloc00:
         dflen = len(dataframe)
@@ -186,11 +185,6 @@ def perform_query(client, project, metric_id, days, hours, minutes, resource_fil
     else:
         print(dataframe)
 
-    # except Exception as exc:
-    #     print(type(exc))
-    #     print(exc)
-    #     print('Permission denied or Metric does not exist: {}'.format(metric_id))
-    #     exit(-1)
     return 0
 
 
@@ -216,7 +210,7 @@ def process(keyfile, project_id, list_resources, list_metrics, request, metric_i
         list_metric_descriptors(client, project)
 
     elif request:
-        perform_query(client, project, metric_id, days, hours, minutes,
+        perform_query(client, project_id, metric_id, days, hours, minutes,
                       resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00)
 
     else:
