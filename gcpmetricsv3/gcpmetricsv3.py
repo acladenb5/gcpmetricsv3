@@ -13,6 +13,7 @@ from google.oauth2 import service_account
 # pylint: disable-msg=too-many-locals
 # pylint: disable-msg=broad-except
 # pylint: disable-msg=too-many-branches
+# pylint: disable-msg=protected-access
 
 
 PARSER = argparse.ArgumentParser(
@@ -26,6 +27,7 @@ PARSER.add_argument('--init-config', help='Location of configuration files.', me
 PARSER.add_argument('--keyfile', help='Goolge Cloud Platform service account key file.', metavar='FILE')
 PARSER.add_argument('--preset', help='Preset ID, like http_response_5xx_sum, etc.', metavar='ID')
 PARSER.add_argument('--project', help='Project ID.', metavar='ID')
+PARSER.add_argument('--lbnref', help='LBN Ref.', metavar='S')
 PARSER.add_argument('--list-resources', default=None, action='store_true', help='List monitored resource descriptors and exit.')
 PARSER.add_argument('--list-metrics', default=None, action='store_true', help='List available metric descriptors and exit.')
 PARSER.add_argument('--query', default=None, action='store_true', help='Run the time series query.')
@@ -85,7 +87,7 @@ def list_metric_descriptors(client, project):
     return 0
 
 
-def perform_query(client, project, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
+def perform_query(client, project, lbnref, metric_id, days, hours, minutes, resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Perform a query."""
     if (days + hours + minutes) == 0:
         error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
@@ -93,6 +95,11 @@ def perform_query(client, project, metric_id, days, hours, minutes, resource_fil
         error('Metric ID is required for query, please use --metric')
 
     req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
+
+    # Hack in order to use user labels
+    filt = req._filter
+    filt = str(filt) + ' AND metadata.user_labels.lbnref="' + lbnref + '"'
+    req._filter = filt
 
     if resource_filter:
         req = req.select_resources(**resource_filter)
@@ -102,7 +109,7 @@ def perform_query(client, project, metric_id, days, hours, minutes, resource_fil
 
     if align:
         delta = datetime.timedelta(days=days, hours=hours, minutes=minutes)
-        seconds = delta.total_seconds()
+        seconds = int(delta.total_seconds())
         if not iloc00:
             print('ALIGN: {} seconds: {}'.format(align, seconds))
         req = req.align(align, seconds=seconds)
@@ -134,12 +141,15 @@ def perform_query(client, project, metric_id, days, hours, minutes, resource_fil
     return 0
 
 
-def process(keyfile, project_id, list_resources, list_metrics, request, metric_id, days, hours, minutes,
+def process(keyfile, project_id, lbnref, list_resources, list_metrics, request, metric_id, days, hours, minutes,
             resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00):
     """Process the request."""
 
     if not project_id:
         error('--project not specified')
+
+    if not lbnref:
+        error('--lbnref not specified')
 
     if not keyfile:
         client = monitoring_v3.MetricServiceClient()
@@ -156,7 +166,7 @@ def process(keyfile, project_id, list_resources, list_metrics, request, metric_i
         list_metric_descriptors(client, project)
 
     elif request:
-        perform_query(client, project_id, metric_id, days, hours, minutes,
+        perform_query(client, project_id, lbnref, metric_id, days, hours, minutes,
                       resource_filter, metric_filter, align, reduce, reduce_grouping, iloc00)
 
     else:
@@ -191,6 +201,7 @@ def main():
         args_dict['keyfile'],
         # args_dict['config'],
         args_dict['project'],
+        args_dict['lbnref'],
         args_dict['list_resources'],
         args_dict['list_metrics'],
         args_dict['query'],
