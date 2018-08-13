@@ -97,9 +97,10 @@ def perform_query(client, project, lbnref, metric_id, days, hours, minutes, reso
     req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
 
     # Hack in order to use user labels
-    filt = req._filter
-    filt = str(filt) + ' AND metadata.user_labels.lbnref="' + lbnref + '"'
-    req._filter = filt
+    if lbnref:
+        filt = req._filter
+        filt = str(filt) + ' AND metadata.user_labels.lbnref="' + lbnref + '"'
+        req._filter = filt
 
     if resource_filter:
         req = req.select_resources(**resource_filter)
@@ -132,8 +133,8 @@ def perform_query(client, project, lbnref, metric_id, days, hours, minutes, reso
             # No dataset = 0
             print('0')
         else:
-            # assert len(dataframe) == 1
-            # assert len(dataframe.iloc[0]) == 1
+            assert len(dataframe) == 1
+            assert len(dataframe.iloc[0]) == 1
             print(dataframe.iloc[0, 0])
     else:
         print(dataframe)
@@ -147,9 +148,6 @@ def process(keyfile, project_id, lbnref, list_resources, list_metrics, request, 
 
     if not project_id:
         error('--project not specified')
-
-    if not lbnref:
-        error('--lbnref not specified')
 
     if not keyfile:
         client = monitoring_v3.MetricServiceClient()
