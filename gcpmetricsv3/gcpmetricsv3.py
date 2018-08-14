@@ -133,8 +133,12 @@ def perform_query(client, project, lbnref, metric_id, days, hours, minutes, reso
             # No dataset = 0
             print('0')
         else:
-            assert len(dataframe) == 1
-            assert len(dataframe.iloc[0]) == 1
+            try:
+                assert len(dataframe) == 1
+                assert len(dataframe.iloc[0]) == 1
+            except AssertionError:
+                print('ERROR: Dataframe has more than 1 column')
+                sys.exit(1)
             print(dataframe.iloc[0, 0])
     else:
         print(dataframe)
