@@ -12,7 +12,9 @@ config = {
     'install_requires': [
         'flake8',
         'pylint',
-        'google-cloud-monitoring'
+        'google-cloud-monitoring',
+        'PyYAML',
+        'pandas'
     ],
     'scripts': 'gcpmetricsv3',
     'name': 'gcpmetricsv3',
