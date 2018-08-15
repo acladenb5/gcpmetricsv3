@@ -14,6 +14,7 @@ from google.oauth2 import service_account
 # pylint: disable-msg=broad-except
 # pylint: disable-msg=too-many-branches
 # pylint: disable-msg=protected-access
+# pylint: disable-msg=too-many-statements
 
 
 PARSER = argparse.ArgumentParser(
@@ -127,6 +128,14 @@ def perform_query(client, project, lbnref, metric_id, days, hours, minutes, reso
 
     dataframe = req.as_dataframe()
 
+    class TooFewItemsError(ValueError):
+        """Raise if too few items."""
+        pass
+
+    class OneColumnError(ValueError):
+        """Raise if only one column."""
+        pass
+
     if iloc00:
         dflen = len(dataframe)
         if not dflen:
@@ -134,11 +143,22 @@ def perform_query(client, project, lbnref, metric_id, days, hours, minutes, reso
             print('0')
         else:
             try:
-                assert len(dataframe) == 1
-                assert len(dataframe.iloc[0]) == 1
-            except AssertionError:
-                print('ERROR: Dataframe has more than 1 column')
+                if len(dataframe) == 1:
+                    raise TooFewItemsError
+                if len(dataframe.iloc[0]) == 1:
+                    raise OneColumnError
+            except TooFewItemsError:
+                print('ERROR: Too few items in the dataframe')
                 sys.exit(1)
+            except OneColumnError:
+                print('ERROR: Not enough colummns in the dataframe')
+                sys.exit(1)
+            # try:
+            #     assert len(dataframe) == 1
+            #     assert len(dataframe.iloc[0]) == 1
+            # except AssertionError as err:
+            #     print('ERROR: Dataframe has more than 1 column')
+            #     sys.exit(1)
             print(dataframe.iloc[0, 0])
     else:
         print(dataframe)
