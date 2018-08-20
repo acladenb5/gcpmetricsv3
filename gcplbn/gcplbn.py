@@ -11,6 +11,7 @@ import yaml
 # pylint: disable-msg=too-many-branches
 # pylint: disable-msg=protected-access
 # pylint: disable-msg=too-many-statements
+# pylint: disable-msg=duplicate-code
 
 
 PARSER = argparse.ArgumentParser(
