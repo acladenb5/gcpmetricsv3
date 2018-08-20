@@ -7,7 +7,7 @@ from setuptools import setup
 config = {
     'description': 'Rewrite of gcpmetrics for monitoring_v3',
     'author': 'A. Claden',
-    'author_email': 'acladen@purplespark.org',
+    'author_email': 'a.claden@linkbynet.com',
     'version': '0.0.1-alpha',
     'install_requires': [
         'flake8',
