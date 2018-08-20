@@ -20,6 +20,8 @@ PARSER = argparse.ArgumentParser(
 )
 
 PARSER.add_argument("--version", default=None, action='store_true', help='Print gcpmetics version and exit.')
+PARSER.add_argument('--project', help='Project ID.', metavar='ID')
+PARSER.add_argument('--service', help='Cloud service to check', metavar='SVC')
 
 
 def version():
@@ -40,11 +42,20 @@ def main():
         print(version())
         return 0
 
+    if args_dict['service']:
+        service = args_dict['service']
+    else:
+        service = ''
+
     metrics_list = yaml.load(open('metrics_list.yaml'))
-    print('metrics list:')
-    for key in metrics_list:
-        print(key)
-        print(metrics_list[key])
+    if service:
+        print('metrics list for {}:'.format(service))
+        print(metrics_list[service])
+    else:
+        print('metrics list:')
+        for key in metrics_list:
+            print(key)
+            print(metrics_list[key])
     return 0
 
 
