@@ -38,15 +38,18 @@ def main():
     if args_dict['version']:
         print(version())
         return 0
-    
-    metrics_file = open('metrics_list.yaml', 'r')
-    # print(metrics_file)
-    metrics_list = yaml.load_all(metrics_file)
+
+    metrics_file = open('metrics_list.yaml')
+    metrics_list = yaml.load(metrics_file)
+    metrics_file.close()
+    # metrics_list = yaml.load(open('metrics_list.yaml'))
+    # print(metrics_list)
     print('metrics list:')
     for key in metrics_list:
-        print(key['compute'])
+        print(key)
+        print(metrics_list[key])
     # print(metrics_list)
-    metrics_file.close()
+    # metrics_file.close()
     return 0
 
 
