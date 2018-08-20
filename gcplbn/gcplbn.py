@@ -39,17 +39,11 @@ def main():
         print(version())
         return 0
 
-    # metrics_file = open('metrics_list.yaml')
-    # metrics_list = yaml.load(metrics_file)
-    # metrics_file.close()
     metrics_list = yaml.load(open('metrics_list.yaml'))
-    # print(metrics_list)
     print('metrics list:')
     for key in metrics_list:
         print(key)
         print(metrics_list[key])
-    # print(metrics_list)
-    # metrics_file.close()
     return 0
 
 
