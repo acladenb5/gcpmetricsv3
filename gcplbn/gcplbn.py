@@ -26,11 +26,11 @@ def main():
     metrics_file = open('metrics_list.yaml', 'r')
     # print(metrics_file)
     metrics_list = yaml.load_all(metrics_file)
+    metrics_file.close()
     print('metrics list:')
     for key in metrics_list:
         print(key['compute'])
     # print(metrics_list)
-    metrics_file.close()
     return 0
 
 
