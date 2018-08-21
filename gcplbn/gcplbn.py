@@ -1,11 +1,13 @@
 """Main application."""
 import os
 import sys
+import datetime
 import argparse
 import json
 import yaml
-# from google.cloud import monitoring_v3
-# from google.oauth2 import service_account
+from google.cloud import monitoring_v3
+from google.cloud.monitoring_v3 import query
+from google.oauth2 import service_account
 
 # pylint: disable-msg=line-too-long
 # pylint: disable-msg=too-many-arguments
@@ -30,6 +32,7 @@ PARSER.add_argument('--service', help='Cloud service to check', metavar='SVC')
 PARSER.add_argument('--privatekeyid', help='Private key ID', metavar='PKID')
 PARSER.add_argument('--privatekey', help='Private key content', metavar='PKC')
 PARSER.add_argument('--clientid', help='Client ID', metavar='CID')
+PARSER.add_argument('--serviceaccount', help='Service account for the project', metavar='SVCACC')
 
 
 def error(message):
@@ -51,6 +54,79 @@ def version():
     return ver.strip()
 
 
+def perform_query(client, project, metric_id, minutes, align, reduce, reduce_grouping, iloc00):
+    """Perform a query."""
+    days = 0
+    hours = 0
+    if (days + hours + minutes) == 0:
+        error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
+    if not metric_id:
+        error('Metric ID is required for query, please use --metric')
+
+    req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
+
+    if align:
+        delta = datetime.timedelta(days=days, hours=hours, minutes=minutes)
+        seconds = int(delta.total_seconds())
+        if not iloc00:
+            print('ALIGN: {} seconds: {}'.format(align, seconds))
+        req = req.align(align, seconds=seconds)
+
+    if reduce:
+        if not iloc00:
+            print('REDUCE: {} grouping: {}'.format(reduce, reduce_grouping))
+            if reduce_grouping:
+                req = req.reduce(reduce, *reduce_grouping)
+            else:
+                req = req.reduce(reduce)
+    if not iloc00:
+        print('QUERY: {}'.format(req.filter))
+
+    dataframe = req.as_dataframe()
+
+    class TooFewItemsError(ValueError):
+        """Raise if too few items."""
+        pass
+
+    class OneColumnError(ValueError):
+        """Raise if only one column."""
+        pass
+
+    if iloc00:
+        dflen = len(dataframe)
+        if not dflen:
+            # No dataset = 0
+            print('0')
+        else:
+            try:
+                if len(dataframe) == 1:
+                    raise TooFewItemsError
+                if len(dataframe.iloc[0]) == 1:
+                    raise OneColumnError
+            except TooFewItemsError:
+                print('ERROR: Too few items in the dataframe')
+                sys.exit(1)
+            except OneColumnError:
+                print('ERROR: Not enough colummns in the dataframe')
+                sys.exit(1)
+            print(dataframe.iloc[0, 0])
+    else:
+        # print(dataframe.info())
+        # print(dataframe.keys())
+        # print(dataframe.columns)
+        # print(dataframe.index, dataframe.values)
+        this = len(dataframe.index) - 1
+        print(dataframe.index[this], dataframe.values[this])
+        # print(dataframe)
+        # dataframe.to_csv('test.csv')
+        # for df in dataframe:
+        #     # print(df)
+        #     # print(df[3], df[4])
+        #     print(dataframe.loc[df, ])
+
+    return 0
+
+
 def main():
     """Main routine."""
     args_dict = vars(PARSER.parse_args())
@@ -62,6 +138,13 @@ def main():
     if not args_dict['project']:
         error('--project not specified')
 
+    if not args_dict['service']:
+        error('--service not specified')
+
+    project_id = args_dict['project']
+    keyfile_name = 'keyfiles/' + project_id + '.json'
+
+    # if not os.path.isfile(keyfile_name):
     if not args_dict['privatekeyid']:
         error('--privatekeyid not specified')
 
@@ -71,14 +154,17 @@ def main():
     if not args_dict['clientid']:
         error('--clientid not specified')
 
-    project_id = args_dict['project']
+    if args_dict['serviceaccount']:
+        svc_account = args_dict['serviceaccount']
+    else:
+        svc_account = 'lbn-monitoring'
+
     private_key_id = args_dict['privatekeyid']
     private_key = args_dict['privatekey']
     private_key = private_key.replace('\\n', '\n')
-    client_email = 'lbn-monitoring@' + project_id + '.iam.gserviceaccount.com'
-    client_x509_cert_url = 'https://www.googleapis.com/robot/v1/metadata/x509/lbn-monitoring%40' + project_id + '.iam.gserviceaccount.com'
+    client_email = svc_account + '@' + project_id + '.iam.gserviceaccount.com'
+    client_x509_cert_url = 'https://www.googleapis.com/robot/v1/metadata/x509/' + svc_account + '%40' + project_id + '.iam.gserviceaccount.com'
     client_id = args_dict['clientid']
-    keyfile_name = 'keyfiles/' + project_id + '.json'
 
     KEYFILE = {'type': 'service_account',
                'project_id': project_id,
@@ -91,37 +177,29 @@ def main():
                'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
                'client_x509_cert_url': client_x509_cert_url}
 
-    print('keyfile:\n{}'.format(KEYFILE))
+    with open(keyfile_name, 'w') as fp:
+        json.dump(KEYFILE, fp)
+        fp.close()
 
-    if not os.path.isfile(keyfile_name):
-        with open(keyfile_name, 'w') as fp:
-            json.dump(KEYFILE, fp)
-            fp.close()
+    credentials = service_account.Credentials.from_service_account_file(keyfile_name)
+    client = monitoring_v3.MetricServiceClient(credentials=credentials)
 
-    # if not args_dict['keyfile']:
-    #     client = monitoring_v3.MetricServiceClient()
-    # else:
-    #     credentials = service_account.Credentials.from_service_account_file(args_dict['keyfile'])
-    #     client = monitoring_v3.MetricServiceClient(credentials=credentials)
+    # print(client)
 
-    if args_dict['service']:
-        service = args_dict['service']
-    else:
-        service = ''
+    service = args_dict['service']
 
     metrics_list = yaml.load(open('metrics_list.yaml'))
-    if service:
-        print('metrics list for "{}":'.format(service))
-        # print(metrics_list[service])
-        for metric in metrics_list[service]:
-            print('- {}'.format(metric))
-    else:
-        print('metrics list:')
-        for key in metrics_list:
-            print(key)
-            # print(metrics_list[key])
-            for metric in metrics_list[key]:
-                print('- {}'.format(metric))
+
+    if service not in metrics_list:
+        print('ERROR: service "{}" is not in the services list'.format(service))
+        return 1
+
+    print('metrics list for "{}":'.format(service))
+    # print(metrics_list[service])
+    for metric in metrics_list[service]:
+        # print('- {}'.format(metric))
+        perform_query(client, project_id, metric, 5, '', '', '', '')
+
     return 0
 
 
