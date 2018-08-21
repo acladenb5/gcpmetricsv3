@@ -3,6 +3,8 @@ import os
 import sys
 import argparse
 import yaml
+# from google.cloud import monitoring_v3
+# from google.oauth2 import service_account
 
 # pylint: disable-msg=line-too-long
 # pylint: disable-msg=too-many-arguments
@@ -20,8 +22,18 @@ PARSER = argparse.ArgumentParser(
 )
 
 PARSER.add_argument("--version", default=None, action='store_true', help='Print gcpmetics version and exit.')
+PARSER.add_argument('--keyfile', help='Goolge Cloud Platform service account key file.', metavar='FILE')
 PARSER.add_argument('--project', help='Project ID.', metavar='ID')
 PARSER.add_argument('--service', help='Cloud service to check', metavar='SVC')
+
+
+def error(message):
+    """Display an error message and exit."""
+    sys.stderr.write('error: {}'.format(message))
+    print()
+    print()
+    PARSER.print_help()
+    sys.exit(1)
 
 
 def version():
@@ -42,6 +54,17 @@ def main():
         print(version())
         return 0
 
+    if not args_dict['project']:
+        error('--project not specified')
+
+    # project_id = args_dict['project']
+
+    # if not args_dict['keyfile']:
+    #     client = monitoring_v3.MetricServiceClient()
+    # else:
+    #     credentials = service_account.Credentials.from_service_account_file(args_dict['keyfile'])
+    #     client = monitoring_v3.MetricServiceClient(credentials=credentials)
+
     if args_dict['service']:
         service = args_dict['service']
     else:
@@ -49,13 +72,17 @@ def main():
 
     metrics_list = yaml.load(open('metrics_list.yaml'))
     if service:
-        print('metrics list for {}:'.format(service))
-        print(metrics_list[service])
+        print('metrics list for "{}":'.format(service))
+        # print(metrics_list[service])
+        for metric in metrics_list[service]:
+            print('- {}'.format(metric))
     else:
         print('metrics list:')
         for key in metrics_list:
             print(key)
-            print(metrics_list[key])
+            # print(metrics_list[key])
+            for metric in metrics_list[key]:
+                print('- {}'.format(metric))
     return 0
 
 
