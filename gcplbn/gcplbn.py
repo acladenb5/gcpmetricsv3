@@ -93,8 +93,9 @@ def main():
 
     print('keyfile:\n{}'.format(KEYFILE))
 
-    with open(keyfile_name, 'w') as fp:
-        json.dump(KEYFILE, fp)
+    if not os.path.isfile(keyfile_name):
+        with open(keyfile_name, 'w') as fp:
+            json.dump(KEYFILE, fp)
 
     # if not args_dict['keyfile']:
     #     client = monitoring_v3.MetricServiceClient()
