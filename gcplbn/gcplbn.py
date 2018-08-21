@@ -115,8 +115,14 @@ def perform_query(client, project, metric_id, minutes, align, reduce, reduce_gro
         # print(dataframe.keys())
         # print(dataframe.columns)
         # print(dataframe.index, dataframe.values)
+        # zdct = dict()
+        # for df in dataframe:
+        #     zdct[0].append({'id': df[3], 'name': df[4]})
         this = len(dataframe.index) - 1
-        print(dataframe.index[this], dataframe.values[this])
+        # print(dataframe.values[this])
+        vals = dataframe.values[this]
+        for val in vals:
+            print('Value: {}'.format(val))
         # print(dataframe)
         # dataframe.to_csv('test.csv')
         # for df in dataframe:
