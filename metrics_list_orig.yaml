@@ -1,5 +1,6 @@
 services:
-  appengine:
+  - service: appengine
+    metrics:
     - appengine.googleapis.com/flex/cpu/reserved_cores
     - appengine.googleapis.com/flex/cpu/utilization
     - appengine.googleapis.com/flex/disk/read_bytes_count
@@ -20,7 +21,8 @@ services:
     - appengine.googleapis.com/system/memory/usage
     - appengine.googleapis.com/system/network/received_bytes_count
     - appengine.googleapis.com/system/network/sent_bytes_count
-  bigquery:
+  - service: bigquery
+    metrics:
     - bigquery.googleapis.com/query/count
     - bigquery.googleapis.com/query/execution_times
     - bigquery.googleapis.com/query/scanned_bytes
@@ -36,7 +38,8 @@ services:
     - bigquery.googleapis.com/storage/uploaded_bytes
     - bigquery.googleapis.com/storage/uploaded_bytes_billed
     - bigquery.googleapis.com/storage/uploaded_row_count
-  bigtable:
+  - service: bigtable
+    metrics:
     - bigtable.googleapis.com/cluster/cpu_load
     - bigtable.googleapis.com/cluster/cpu_load_hottest_node
     - bigtable.googleapis.com/cluster/disk_load
@@ -53,19 +56,22 @@ services:
     - bigtable.googleapis.com/server/returned_rows_count
     - bigtable.googleapis.com/server/sent_bytes_count
     - bigtable.googleapis.com/table/bytes_used
-  cloudfunctions:
+  - service: cloudfunctions
+    metrics:
     - cloudfunctions.googleapis.com/function/execution_count
     - cloudfunctions.googleapis.com/function/execution_times
     - cloudfunctions.googleapis.com/function/network_egress
     - cloudfunctions.googleapis.com/function/user_memory_bytes
-  cloudiot:
+  - service: cloudiot
+    metrics:
     - cloudiot.googleapis.com/device/active_devices
     - cloudiot.googleapis.com/device/billing_bytes_count
     - cloudiot.googleapis.com/device/error_count
     - cloudiot.googleapis.com/device/operation_count
     - cloudiot.googleapis.com/device/received_bytes_count
     - cloudiot.googleapis.com/device/sent_bytes_count
-  cloudsql:
+  - service: cloudsql
+    metrics:
     - cloudsql.googleapis.com/database/auto_failover_request_count
     - cloudsql.googleapis.com/database/available_for_failover
     - cloudsql.googleapis.com/database/cpu/reserved_cores
@@ -103,14 +109,17 @@ services:
     - cloudsql.googleapis.com/database/state
     - cloudsql.googleapis.com/database/up
     - cloudsql.googleapis.com/database/uptime
-  cloudtasks:
+  - service: cloudtasks
+    metrics:
     - cloudtasks.googleapis.com/api/request_count
     - cloudtasks.googleapis.com/queue/task_attempt_count
     - cloudtasks.googleapis.com/queue/task_attempt_delays
-  composer:
+  - service: composer
+    metrics:
     - composer.googleapis.com/environment/api/request_count
     - composer.googleapis.com/environment/api/request_latencies
-  compute:
+  - service: compute
+    metrics:
     - compute.googleapis.com/firewall/dropped_bytes_count
     - compute.googleapis.com/firewall/dropped_packets_count
     - compute.googleapis.com/instance/cpu/reserved_cores
@@ -131,7 +140,8 @@ services:
     - compute.googleapis.com/instance/network/sent_bytes_count
     - compute.googleapis.com/instance/network/sent_packets_count
     - compute.googleapis.com/instance/uptime
-  container:
+  - service: container
+    metrics:
     - container.googleapis.com/container/accelerator/duty_cycle
     - container.googleapis.com/container/accelerator/memory_total
     - container.googleapis.com/container/accelerator/memory_used
@@ -145,9 +155,11 @@ services:
     - container.googleapis.com/container/memory/bytes_used
     - container.googleapis.com/container/memory/page_fault_count
     - container.googleapis.com/container/uptime
-  custom:
+  - service: custom
+    metrics:
     - custom.googleapis.com/custom_measurement
-  dataflow:
+  - service: dataflow
+    metrics:
     - dataflow.googleapis.com/job/billable_shuffle_data_processed
     - dataflow.googleapis.com/job/current_num_vcpus
     - dataflow.googleapis.com/job/data_watermark_age
@@ -164,7 +176,8 @@ services:
     - dataflow.googleapis.com/job/total_streaming_data_processed
     - dataflow.googleapis.com/job/total_vcpu_time
     - dataflow.googleapis.com/job/user_counter
-  dataproc:
+  - service: dataproc
+    metrics:
     - dataproc.googleapis.com/cluster/hdfs/datanodes
     - dataproc.googleapis.com/cluster/hdfs/storage_capacity
     - dataproc.googleapis.com/cluster/hdfs/storage_utilization
@@ -186,12 +199,14 @@ services:
     - dataproc.googleapis.com/cluster/yarn/nodemanagers
     - dataproc.googleapis.com/cluster/yarn/pending_memory_size
     - dataproc.googleapis.com/cluster/yarn/virtual_cores
-  datastore:
+  - service: datastore
+    metrics:
     - datastore.googleapis.com/api/request_count
     - datastore.googleapis.com/entity/read_sizes
     - datastore.googleapis.com/entity/write_sizes
     - datastore.googleapis.com/index/write_count
-  file:
+  - service: file
+    metrics:
     - file.googleapis.com/nfs/server/free_bytes
     - file.googleapis.com/nfs/server/free_bytes_percent
     - file.googleapis.com/nfs/server/procedure_call_count
@@ -203,9 +218,11 @@ services:
     - file.googleapis.com/nfs/server/write_bytes_count
     - file.googleapis.com/nfs/server/write_milliseconds_count
     - file.googleapis.com/nfs/server/write_ops_count
-  firebaseauth:
+  - service: firebaseauth
+    metrics:
     - firebaseauth.googleapis.com/phone_auth/phone_verification_count
-  firebasedatabase:
+  - service: firebasedatabase
+    metrics:
     - firebasedatabase.googleapis.com/io/database_load
     - firebasedatabase.googleapis.com/io/persisted_bytes_count
     - firebasedatabase.googleapis.com/io/sent_responses_count
@@ -224,13 +241,15 @@ services:
     - firebasedatabase.googleapis.com/storage/disabled_for_overages
     - firebasedatabase.googleapis.com/storage/limit
     - firebasedatabase.googleapis.com/storage/total_bytes
-  firebasehosting:
+  - service: firebasehosting
+    metrics:
     - firebasehosting.googleapis.com/network/monthly_sent
     - firebasehosting.googleapis.com/network/monthly_sent_limit
     - firebasehosting.googleapis.com/network/sent_bytes_count
     - firebasehosting.googleapis.com/storage/limit
     - firebasehosting.googleapis.com/storage/total_bytes
-  interconnect:
+  - service: interconnect
+    metrics:
     - interconnect.googleapis.com/network/attachment/capacity
     - interconnect.googleapis.com/network/attachment/received_bytes_count
     - interconnect.googleapis.com/network/attachment/received_packets_count
@@ -248,7 +267,8 @@ services:
     - interconnect.googleapis.com/network/interconnect/send_errors_count
     - interconnect.googleapis.com/network/interconnect/sent_bytes_count
     - interconnect.googleapis.com/network/interconnect/sent_unicast_packets_count
-  loadbalancing:
+  - service: loadbalancing
+    metrics:
     - loadbalancing.googleapis.com/https/backend_latencies
     - loadbalancing.googleapis.com/https/backend_request_bytes_count
     - loadbalancing.googleapis.com/https/backend_request_count
@@ -269,7 +289,8 @@ services:
     - loadbalancing.googleapis.com/tcp_ssl_proxy/ingress_bytes_count
     - loadbalancing.googleapis.com/tcp_ssl_proxy/new_connections
     - loadbalancing.googleapis.com/tcp_ssl_proxy/open_connections
-  logging:
+  - service: logging
+    metrics:
     - logging.googleapis.com/billing/bytes_ingested
     - logging.googleapis.com/billing/monthly_bytes_ingested
     - logging.googleapis.com/byte_count
@@ -283,14 +304,16 @@ services:
     - logging.googleapis.com/logs_based_metrics_error_count
     - logging.googleapis.com/metric_throttled
     - logging.googleapis.com/time_series_count
-  ml:
+  - service: ml
+    metrics:
     - ml.googleapis.com/prediction/error_count
     - ml.googleapis.com/prediction/latencies
     - ml.googleapis.com/prediction/prediction_count
     - ml.googleapis.com/prediction/response_count
     - ml.googleapis.com/training/cpu/utilization
     - ml.googleapis.com/training/memory/utilization
-  monitoring:
+  - service: monitoring
+    metrics:
     - monitoring.googleapis.com/billing/bytes_ingested
     - monitoring.googleapis.com/stats/num_time_series
     - monitoring.googleapis.com/uptime_check/check_passed
@@ -298,10 +321,12 @@ services:
     - monitoring.googleapis.com/uptime_check/error_code
     - monitoring.googleapis.com/uptime_check/http_status
     - monitoring.googleapis.com/uptime_check/request_latency
-  networksecurity:
+  - service: networksecurity
+    metrics:
     - networksecurity.googleapis.com/https/previewed_request_count
     - networksecurity.googleapis.com/https/request_count
-  pubsub:
+  - service: pubsub
+    metrics:
     - pubsub.googleapis.com/snapshot/backlog_bytes
     - pubsub.googleapis.com/snapshot/backlog_bytes_by_region
     - pubsub.googleapis.com/snapshot/config_updates_count
@@ -349,7 +374,8 @@ services:
     - pubsub.googleapis.com/topic/send_message_operation_count
     - pubsub.googleapis.com/topic/send_request_count
     - pubsub.googleapis.com/topic/unacked_bytes_by_region
-  redis:
+  - service: redis
+    metrics:
     - redis.googleapis.com/clients/blocked
     - redis.googleapis.com/clients/connected
     - redis.googleapis.com/commands/calls
@@ -379,7 +405,8 @@ services:
     - redis.googleapis.com/stats/pubsub/channels
     - redis.googleapis.com/stats/pubsub/patterns
     - redis.googleapis.com/stats/reject_connections_count
-  router:
+  - service: router
+    metrics:
     - router.googleapis.com/best_received_routes_count
     - router.googleapis.com/bgp/received_routes_count
     - router.googleapis.com/bgp/sent_routes_count
@@ -388,14 +415,16 @@ services:
     - router.googleapis.com/bgp_sessions_up_count
     - router.googleapis.com/router_up
     - router.googleapis.com/sent_routes_count
-  serviceruntime:
+  - service: serviceruntime
+    metrics:
     - serviceruntime.googleapis.com/api/request_count
     - serviceruntime.googleapis.com/api/request_latencies
     - serviceruntime.googleapis.com/api/request_latencies_backend
     - serviceruntime.googleapis.com/api/request_latencies_overhead
     - serviceruntime.googleapis.com/api/request_sizes
     - serviceruntime.googleapis.com/api/response_sizes
-  spanner:
+  - service: spanner
+    metrics:
     - spanner.googleapis.com/api/received_bytes_count
     - spanner.googleapis.com/api/request_count
     - spanner.googleapis.com/api/request_latencies
@@ -404,19 +433,22 @@ services:
     - spanner.googleapis.com/instance/node_count
     - spanner.googleapis.com/instance/session_count
     - spanner.googleapis.com/instance/storage/used_bytes
-  storage:
+  - service: storage
+    metrics:
     - storage.googleapis.com/api/request_count
     - storage.googleapis.com/network/received_bytes_count
     - storage.googleapis.com/network/sent_bytes_count
     - storage.googleapis.com/storage/object_count
     - storage.googleapis.com/storage/total_byte_seconds
     - storage.googleapis.com/storage/total_bytes
-  tpu:
+  - service: tpu
+    metrics:
     - tpu.googleapis.com/cpu/utilization
     - tpu.googleapis.com/memory/usage
     - tpu.googleapis.com/network/received_bytes_count
     - tpu.googleapis.com/network/sent_bytes_count
-  vpn:
+  - service: vpn
+    metrics:
     - vpn.googleapis.com/network/dropped_received_packets_count
     - vpn.googleapis.com/network/dropped_sent_packets_count
     - vpn.googleapis.com/network/received_bytes_count
