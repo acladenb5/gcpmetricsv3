@@ -75,5 +75,7 @@ func main() {
 		log.Fatalln(erryaml)
 	}
 
-	fmt.Printf("%v\n", services.Services[serviceID])
+	for _, metric := range services.Services[serviceID] {
+		fmt.Println(metric)
+	}
 }
