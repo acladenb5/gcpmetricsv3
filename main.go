@@ -21,39 +21,8 @@ var (
 // Structs
 
 // Services structure
-// type Services struct {
-// 	Services []struct {
-// 		Service string `yaml:"service"`
-// 		Metrics []struct {
-// 			Metric []string
-// 		}
-// 	}
-// }
 type Services struct {
 	Services map[string][]string
-}
-
-// Metric structure
-type Metric struct {
-	Metric string
-}
-
-// MetricsList structure
-type MetricsList struct {
-	MetricsList []Metric // `yaml:"metrics"`
-}
-
-// Service structure
-type Service struct {
-	Service string   `yaml:"service"`
-	Metrics []Metric `yaml:"metrics"`
-	// Metrics MetricsList `yaml:"metrics"`
-}
-
-// ServicesList structure
-type ServicesList struct {
-	ServicesList []Service `yaml:"services"`
-	// Services []string `yaml:"services"`
 }
 
 // Main routine
@@ -92,26 +61,19 @@ func main() {
 
 	fmt.Println(projectID, serviceID, serviceListFile)
 
-	// var svcList ServicesList
-	var mySvc Services
+	var services Services
 
-	svList, errSvcList := ioutil.ReadFile(serviceListFile)
+	svcList, errSvcList := ioutil.ReadFile(serviceListFile)
 
 	if errSvcList != nil {
 		log.Fatalln(errSvcList)
 	}
 
-	// fmt.Println(source)
-	// fmt.Println(reflect.TypeOf(svList))
-	// fmt.Println(reflect.TypeOf(svcList))
-
-	// erryaml := yaml.Unmarshal(svList, &svcList)
-	erryaml := yaml.Unmarshal(svList, &mySvc)
+	erryaml := yaml.Unmarshal(svcList, &services)
 
 	if erryaml != nil {
 		log.Fatalln(erryaml)
 	}
 
-	// fmt.Printf("%v\n", svcList)
-	fmt.Printf("%v\n", mySvc.Services[serviceID])
+	fmt.Printf("%v\n", services.Services[serviceID])
 }
