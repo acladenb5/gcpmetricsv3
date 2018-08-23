@@ -27,6 +27,7 @@ type Services struct {
 
 // MetricVal structure
 type MetricVal struct {
+	Metric      string
 	ItemID      string
 	ItemName    string
 	MetricValue string
@@ -36,6 +37,10 @@ type MetricVal struct {
 func runQuery(metric string) MetricVal {
 	// Time to put some code here
 	var metricVal MetricVal
+	metricVal.Metric = metric
+	metricVal.ItemID = "foo"
+	metricVal.ItemName = "bar"
+	metricVal.MetricValue = fmt.Sprintf("%f", 2.021)
 	return metricVal
 }
 
@@ -90,7 +95,9 @@ func main() {
 	}
 
 	for _, metric := range services.Services[serviceID] {
-		fmt.Println(metric)
+		// fmt.Println(metric)
+		mval := runQuery(metric)
+		fmt.Println(mval)
 		// TODO: call a function that will return the following info:
 		// ID: the id of the item in the service
 		// Name: the name of the item in the service
