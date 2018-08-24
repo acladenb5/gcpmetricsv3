@@ -62,62 +62,38 @@ def perform_query(client, project, metric_id, minutes):
     req = query.Query(client, project, metric_type=metric_id, end_time=None, days=0, hours=0, minutes=minutes)
 
     dataframe = req.as_dataframe()
-    # print(dataframe)
-    # print(dataframe.values)
 
     dflen = len(dataframe)
 
-    # print('dflen={}'.format(dflen))
-    # print('number of cols: {}'.format(dataframe.shape[1]))
-    # print('len(dataframe.keys()): {}'.format(len(dataframe.keys())))
-    # print('len(dataframe.keys().names): {}'.format(len(dataframe.keys().names)))
-    print('dataframe.keys(): {}'.format(dataframe.keys()))
     if dflen:
         keylen = len(dataframe.keys().names)
         lastlevelslen = len(dataframe.keys().levels[keylen - 1])
         beforelastlevelslen = len(dataframe.keys().levels[keylen - 2])
-        print(keylen, beforelastlevelslen, lastlevelslen)
-        # print(dataframe.keys().levels[0][0])
-        # print(dataframe.keys().levels[1][0])
-        # print(dataframe.keys().levels[2][0])
-        # print(dataframe.keys().levels[3][0])
-        # print(dataframe.keys().levels[3][1])
 
-        # print(dataframe.keys().levels[0][0])
-        # print(dataframe.keys().levels[1][0])
-        # print(dataframe.keys().levels[2][1])
-        # print(dataframe.keys().levels[3][1])
+        names = []
+        mymax = 1
+        arrkeysdict = []
+        for i in range(keylen):
+            names.append(dataframe.keys().names[i])
+            maxlookup = len(dataframe.keys().levels[i])
 
-    dictret = dict()
-    if dflen:
-        # counter = 0
-        for cnt in range(dflen):
-            counter = 0
-            print(cnt)
-            print('-----')
-            for name in dataframe.keys().names:
-                try:
-                    # print(dataframe.keys().levels[counter][cnt])
-                    counter += 1
-                    print(counter)
-                except IndexError:
-                    continue
-            print('-----')
-        exit(0)
-        for name in dataframe.keys().names:
-            dictret[name] = dataframe.keys().levels[counter][0]
-            counter += 1
+            if maxlookup > mymax:
+                mymax = maxlookup
 
-        mydict = dataframe.to_dict('record')
-        # stuff = list(mydict[0].keys())
-        # stufflen = len(stuff) -1
-
-        dictret['metric'] = metric_id
-        dictret['val'] = list(mydict[0].values())[0]
+        for i in range(mymax):
+            keysdict = dict()
+            for j in range(keylen):
+                if len(dataframe.keys().levels[j]) > 1:
+                    keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][i]
+                else:
+                    keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][0]
+                mydict = dataframe.to_dict('record')
+                keysdict['value'] = list(mydict[0].values())[0]
+                keysdict['metric'] = metric_id
+            arrkeysdict.append(keysdict)
     else:
-        dictret = {'metric': metric_id, 'val': 'Empty result'}
-
-    print(dictret)
+        arrkeysdict = [{'metric': metric_id, 'val': 'Empty result'}]
+    print(arrkeysdict)
     return 0
 
 
@@ -138,7 +114,6 @@ def main():
     project_id = args_dict['project']
     keyfile_name = 'keyfiles/' + project_id + '.json'
 
-    # if not os.path.isfile(keyfile_name):
     if not args_dict['privatekeyid']:
         error('--privatekeyid not specified')
 
@@ -178,20 +153,15 @@ def main():
     credentials = service_account.Credentials.from_service_account_file(keyfile_name)
     client = monitoring_v3.MetricServiceClient(credentials=credentials)
 
-    # print(client)
-
     service = args_dict['service']
 
-    metrics_list = yaml.load(open('metrics_list_full.yaml'))
+    metrics_list = yaml.load(open('metrics_list.yaml'))
 
     if service not in metrics_list:
         print('ERROR: service "{}" is not in the services list'.format(service))
         return 1
 
-    # print('metrics list for "{}":'.format(service))
-    # print(metrics_list[service])
     for metric in metrics_list[service]:
-        # print('- {}'.format(metric))
         perform_query(client, project_id, metric, 5)
 
     return 0
