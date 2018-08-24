@@ -68,7 +68,7 @@ def perform_query(client, project, metric_id, minutes):
     dflen = len(dataframe)
     print('dflen={}'.format(dflen))
     print('number of cols: {}'.format(dataframe.shape[1]))
-    tmp = dataframe.shape[1]
+    # tmp = dataframe.shape[1]
     print(dataframe.keys().levels[0][0])
     print(dataframe.keys().levels[1][0])
     print(dataframe.keys().levels[2][0])
@@ -94,20 +94,20 @@ def perform_query(client, project, metric_id, minutes):
                 except IndexError:
                     continue
             print('-----')
-        return 0
+        exit(0)
         for name in dataframe.keys().names:
             dictret[name] = dataframe.keys().levels[counter][0]
             counter += 1
 
         mydict = dataframe.to_dict('record')
-        stuff = list(mydict[0].keys())
+        # stuff = list(mydict[0].keys())
         # stufflen = len(stuff) -1
 
         dictret['metric'] = metric_id
         dictret['val'] = list(mydict[0].values())[0]
     else:
         dictret = {'metric': metric_id, 'val': 'Empty result'}
-    
+
     print(dictret)
     return 0
 
