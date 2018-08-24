@@ -67,8 +67,6 @@ def perform_query(client, project, metric_id, minutes):
 
     if dflen:
         keylen = len(dataframe.keys().names)
-        lastlevelslen = len(dataframe.keys().levels[keylen - 1])
-        beforelastlevelslen = len(dataframe.keys().levels[keylen - 2])
 
         names = []
         mymax = 1
