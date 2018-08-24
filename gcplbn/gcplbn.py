@@ -1,7 +1,7 @@
 """Main application."""
 import os
 import sys
-import datetime
+# import datetime
 import argparse
 import json
 import yaml
@@ -54,82 +54,61 @@ def version():
     return ver.strip()
 
 
-def perform_query(client, project, metric_id, minutes, align, reduce, reduce_grouping, iloc00):
+def perform_query(client, project, metric_id, minutes):
     """Perform a query."""
-    days = 0
-    hours = 0
-    if (days + hours + minutes) == 0:
-        error('No time interval specified. Please use --infinite or --days, --hours, --minutes')
-    if not metric_id:
-        error('Metric ID is required for query, please use --metric')
+    if minutes == 0:
+        error('No time interval specified. Please specify the number of minutes')
 
-    req = query.Query(client, project, metric_type=metric_id, end_time=None, days=days, hours=hours, minutes=minutes)
-
-    if align:
-        delta = datetime.timedelta(days=days, hours=hours, minutes=minutes)
-        seconds = int(delta.total_seconds())
-        if not iloc00:
-            print('ALIGN: {} seconds: {}'.format(align, seconds))
-        req = req.align(align, seconds=seconds)
-
-    if reduce:
-        if not iloc00:
-            print('REDUCE: {} grouping: {}'.format(reduce, reduce_grouping))
-            if reduce_grouping:
-                req = req.reduce(reduce, *reduce_grouping)
-            else:
-                req = req.reduce(reduce)
-    if not iloc00:
-        print('QUERY: {}'.format(req.filter))
+    req = query.Query(client, project, metric_type=metric_id, end_time=None, days=0, hours=0, minutes=minutes)
 
     dataframe = req.as_dataframe()
+    # print(dataframe)
+    # print(dataframe.values)
 
-    class TooFewItemsError(ValueError):
-        """Raise if too few items."""
-        pass
+    dflen = len(dataframe)
+    print('dflen={}'.format(dflen))
+    print('number of cols: {}'.format(dataframe.shape[1]))
+    tmp = dataframe.shape[1]
+    print(dataframe.keys().levels[0][0])
+    print(dataframe.keys().levels[1][0])
+    print(dataframe.keys().levels[2][0])
+    print(dataframe.keys().levels[3][0])
 
-    class OneColumnError(ValueError):
-        """Raise if only one column."""
-        pass
+    print(dataframe.keys().levels[0][0])
+    print(dataframe.keys().levels[1][0])
+    print(dataframe.keys().levels[2][1])
+    print(dataframe.keys().levels[3][1])
 
-    if iloc00:
-        dflen = len(dataframe)
-        if not dflen:
-            # No dataset = 0
-            print('0')
-        else:
-            try:
-                if len(dataframe) == 1:
-                    raise TooFewItemsError
-                if len(dataframe.iloc[0]) == 1:
-                    raise OneColumnError
-            except TooFewItemsError:
-                print('ERROR: Too few items in the dataframe')
-                sys.exit(1)
-            except OneColumnError:
-                print('ERROR: Not enough colummns in the dataframe')
-                sys.exit(1)
-            print(dataframe.iloc[0, 0])
+    dictret = dict()
+    if dflen:
+        # counter = 0
+        for cnt in range(dflen):
+            counter = 0
+            print(cnt)
+            print('-----')
+            for name in dataframe.keys().names:
+                try:
+                    # print(dataframe.keys().levels[counter][cnt])
+                    counter += 1
+                    print(counter)
+                except IndexError:
+                    continue
+            print('-----')
+        return 0
+        for name in dataframe.keys().names:
+            dictret[name] = dataframe.keys().levels[counter][0]
+            counter += 1
+
+        mydict = dataframe.to_dict('record')
+        stuff = list(mydict[0].keys())
+        # stufflen = len(stuff) -1
+
+        dictret['metric'] = metric_id
+        dictret['val'] = list(mydict[0].values())[0]
     else:
-        # print(dataframe.info())
-        # print(dataframe.keys())
-        # print(dataframe.columns)
-        # print(dataframe.index, dataframe.values)
-        # zdct = dict()
-        # for df in dataframe:
-        #     zdct[0].append({'id': df[3], 'name': df[4]})
-        this = len(dataframe.index) - 1
-        # print(dataframe.values[this])
-        vals = dataframe.values[this]
-        for val in vals:
-            print('Value: {}'.format(val))
-        # print(dataframe)
-        # dataframe.to_csv('test.csv')
-        # for df in dataframe:
-        #     # print(df)
-        #     # print(df[3], df[4])
-        #     print(dataframe.loc[df, ])
-
+        dictret = {'metric': metric_id, 'val': 'Empty result'}
+    
+    print(dictret)
     return 0
 
 
@@ -200,11 +179,11 @@ def main():
         print('ERROR: service "{}" is not in the services list'.format(service))
         return 1
 
-    print('metrics list for "{}":'.format(service))
+    # print('metrics list for "{}":'.format(service))
     # print(metrics_list[service])
     for metric in metrics_list[service]:
         # print('- {}'.format(metric))
-        perform_query(client, project_id, metric, 5, '', '', '', '')
+        perform_query(client, project_id, metric, 5)
 
     return 0
 
