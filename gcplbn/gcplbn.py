@@ -66,18 +66,27 @@ def perform_query(client, project, metric_id, minutes):
     # print(dataframe.values)
 
     dflen = len(dataframe)
-    print('dflen={}'.format(dflen))
-    print('number of cols: {}'.format(dataframe.shape[1]))
-    # tmp = dataframe.shape[1]
-    print(dataframe.keys().levels[0][0])
-    print(dataframe.keys().levels[1][0])
-    print(dataframe.keys().levels[2][0])
-    print(dataframe.keys().levels[3][0])
 
-    print(dataframe.keys().levels[0][0])
-    print(dataframe.keys().levels[1][0])
-    print(dataframe.keys().levels[2][1])
-    print(dataframe.keys().levels[3][1])
+    # print('dflen={}'.format(dflen))
+    # print('number of cols: {}'.format(dataframe.shape[1]))
+    # print('len(dataframe.keys()): {}'.format(len(dataframe.keys())))
+    # print('len(dataframe.keys().names): {}'.format(len(dataframe.keys().names)))
+    print('dataframe.keys(): {}'.format(dataframe.keys()))
+    if dflen:
+        keylen = len(dataframe.keys().names)
+        lastlevelslen = len(dataframe.keys().levels[keylen - 1])
+        beforelastlevelslen = len(dataframe.keys().levels[keylen - 2])
+        print(keylen, beforelastlevelslen, lastlevelslen)
+        # print(dataframe.keys().levels[0][0])
+        # print(dataframe.keys().levels[1][0])
+        # print(dataframe.keys().levels[2][0])
+        # print(dataframe.keys().levels[3][0])
+        # print(dataframe.keys().levels[3][1])
+
+        # print(dataframe.keys().levels[0][0])
+        # print(dataframe.keys().levels[1][0])
+        # print(dataframe.keys().levels[2][1])
+        # print(dataframe.keys().levels[3][1])
 
     dictret = dict()
     if dflen:
@@ -173,7 +182,7 @@ def main():
 
     service = args_dict['service']
 
-    metrics_list = yaml.load(open('metrics_list.yaml'))
+    metrics_list = yaml.load(open('metrics_list_full.yaml'))
 
     if service not in metrics_list:
         print('ERROR: service "{}" is not in the services list'.format(service))
