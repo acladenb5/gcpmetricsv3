@@ -68,7 +68,8 @@ disable=line-too-long,
         protected-access,
         too-many-statements,
         duplicate-code,
-        invalid-name
+        invalid-name,
+        bare-except
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

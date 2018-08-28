@@ -18,6 +18,7 @@ from google.oauth2 import service_account
 # pylint: disable-msg=too-many-statements
 # pylint: disable-msg=duplicate-code
 # pylint: disable-msg=invalid-name
+# pylint: disable-msg=bare-except
 
 
 PARSER = argparse.ArgumentParser(
@@ -80,15 +81,18 @@ def perform_query(client, project, metric_id, minutes):
 
         for i in range(mymax):
             keysdict = dict()
-            for j in range(keylen):
-                if len(dataframe.keys().levels[j]) > 1:
-                    keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][i]
-                else:
-                    keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][0]
-                mydict = dataframe.to_dict('record')
-                keysdict['value'] = list(mydict[0].values())[0]
-                keysdict['metric'] = metric_id
-            arrkeysdict.append(keysdict)
+            try:
+                for j in range(keylen):
+                    if len(dataframe.keys().levels[j]) > 1:
+                        keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][i]
+                    else:
+                        keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][0]
+                    mydict = dataframe.to_dict('record')
+                    keysdict['value'] = list(mydict[0].values())[0]
+                    keysdict['metric'] = metric_id
+                arrkeysdict.append(keysdict)
+            except:         # noqa: E722
+                continue
     else:
         arrkeysdict = [{'metric': metric_id, 'val': 'Empty result'}]
     print(arrkeysdict)
