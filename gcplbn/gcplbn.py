@@ -35,6 +35,8 @@ PARSER.add_argument('--privatekey', help='Private key content', metavar='PKC')
 PARSER.add_argument('--clientid', help='Client ID', metavar='CID')
 PARSER.add_argument('--serviceaccount', help='Service account for the project', metavar='SVCACC')
 
+# KEYSRCDIR = '/etc/gcpmonitoring/keysfiles'
+
 
 def error(message):
     """Display an error message and exit."""
