@@ -22,7 +22,13 @@ cd GCP-Monitoring
 pip install -r requirements.txt
 ```
 
-4. Set the variables in the wrapper script and copy it to the directory of your chosing.
+4. Copy it to the directory of your chosing set the variables in the wrapper (gcplmetrics.sh) script and .
+
+```bash
+cp gcplmetrics.sh /usr/local/zabbix/scripts
+```
+
+Then edit this copy and set the variables.
 
 VENV_DIR is the path to the virtualenv you created in step 1
 GCP_METRICS_DIR is the path where you cloned the git repository
