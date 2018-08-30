@@ -68,12 +68,13 @@ def perform_query(client, project, metric_id, minutes):
 
     dflen = len(dataframe)
 
+    arrkeysdict = []
+
     if dflen:
         keylen = len(dataframe.keys().names)
 
         names = []
         mymax = 1
-        arrkeysdict = []
         for i in range(keylen):
             names.append(dataframe.keys().names[i])
             maxlookup = len(dataframe.keys().levels[i])
@@ -95,10 +96,10 @@ def perform_query(client, project, metric_id, minutes):
                 arrkeysdict.append(keysdict)
             except:         # noqa: E722
                 continue
-    else:
-        arrkeysdict = [{'metric': metric_id, 'val': 'Empty result'}]
-    print(arrkeysdict)
-    return 0
+    # else:
+    #     arrkeysdict = [{'metric': metric_id, 'value': 'Empty result'}]
+    # print(arrkeysdict)
+    return arrkeysdict
 
 
 def main():
@@ -165,9 +166,23 @@ def main():
         print('ERROR: service "{}" is not in the services list'.format(service))
         return 1
 
-    for metric in metrics_list[service]:
-        perform_query(client, project_id, metric, 5)
+    exp_metrics = dict()
 
+
+    for metric in metrics_list[service]:
+        arrkeysdict = perform_query(client, project_id, metric, 5)
+        # arr_metrics.extend(arrkeysdict)
+        # arr_metrics.append(arrkeysdict)
+        exp_metrics['metric'] = metric
+        exp_metrics['data'] = arrkeysdict
+        print(json.dumps(exp_metrics))
+
+    # print(arr_metrics)
+    # print(type(arr_metrics))
+    # print(arr_metrics)
+    # dict_metrics = dict(arr_metrics)
+    # print(json.dumps(dict(arr_metrics)))
+    # print(json.dumps({'metrics_data': arr_metrics}))
     return 0
 
 
