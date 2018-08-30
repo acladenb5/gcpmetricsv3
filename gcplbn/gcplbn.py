@@ -168,7 +168,6 @@ def main():
 
     exp_metrics = dict()
 
-
     for metric in metrics_list[service]:
         arrkeysdict = perform_query(client, project_id, metric, 5)
         # arr_metrics.extend(arrkeysdict)
