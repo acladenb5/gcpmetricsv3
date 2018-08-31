@@ -66,7 +66,43 @@ def perform_query(client, project, metric_id, minutes):
 
     dataframe = req.as_dataframe()
 
-    return dataframe.unstack(level=0).to_json(orient='table')
+    dflen = len(dataframe)
+    # print(dataframe.to_json(orient='table'))
+    # print(dataframe.unstack(level=0).to_json(orient='table'))
+    return(dataframe.unstack(level=0).to_json(orient='table'))
+
+    arrkeysdict = []
+
+    if dflen:
+        keylen = len(dataframe.keys().names)
+
+        names = []
+        mymax = 1
+        for i in range(keylen):
+            names.append(dataframe.keys().names[i])
+            maxlookup = len(dataframe.keys().levels[i])
+
+            if maxlookup > mymax:
+                mymax = maxlookup
+
+        for i in range(mymax):
+            keysdict = dict()
+            try:
+                for j in range(keylen):
+                    if len(dataframe.keys().levels[j]) > 1:
+                        keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][i]
+                    else:
+                        keysdict[dataframe.keys().names[j]] = dataframe.keys().levels[j][0]
+                    mydict = dataframe.to_dict('record')
+                    keysdict['value'] = list(mydict[0].values())[0]
+                    keysdict['metric'] = metric_id
+                arrkeysdict.append(keysdict)
+            except:         # noqa: E722
+                continue
+    # else:
+    #     arrkeysdict = [{'metric': metric_id, 'value': 'Empty result'}]
+    # print(arrkeysdict)
+    return arrkeysdict
 
 
 def main():
@@ -134,15 +170,26 @@ def main():
         return 1
 
     arr_metrics = []
-    exp_metrics = dict()
+    exp_metrics = dict() 
 
     for metric in metrics_list[service]:
         arrkeysdict = perform_query(client, project_id, metric, 5)
+        # arr_metrics.extend(arrkeysdict)
+        # arr_metrics.append(arrkeysdict)
         exp_metrics['metric'] = metric
         exp_metrics['data'] = json.loads(arrkeysdict)
+        # exp_metrics['data'] = arrkeysdict
+        # print(json.dumps(exp_metrics))
+        # print(json.dumps(exp_metrics))
+        # print(exp_metrics)
         arr_metrics.append(exp_metrics)
 
     print(json.dumps(arr_metrics))
+    # print(type(arr_metrics))
+    # print(arr_metrics)
+    # dict_metrics = dict(arr_metrics)
+    # print(json.dumps(dict(arr_metrics)))
+    # print(json.dumps({'metrics_data': arr_metrics}))
     return 0
 
 
