@@ -1,7 +1,7 @@
 """Main application."""
 import os
 import sys
-# import datetime
+import datetime
 import argparse
 import json
 import yaml
@@ -34,6 +34,8 @@ PARSER.add_argument('--privatekeyid', help='Private key ID', metavar='PKID')
 PARSER.add_argument('--privatekey', help='Private key content', metavar='PKC')
 PARSER.add_argument('--clientid', help='Client ID', metavar='CID')
 PARSER.add_argument('--serviceaccount', help='Service account for the project', metavar='SVCACC')
+PARSER.add_argument('--lbnref', help='LBNREF to query', metavar='LBNREF')
+# PARSER.add_argument('--hostname', help='Host', metavar='HOST')
 
 # KEYSRCDIR = '/etc/gcpmonitoring/keysfiles'
 
@@ -57,14 +59,25 @@ def version():
     return ver.strip()
 
 
-def perform_query(client, project, metric_id, minutes):
+def perform_query(client, project, metric_id, minutes, lbnref):
     """Perform a query."""
     if minutes == 0:
         error('No time interval specified. Please specify the number of minutes')
 
     req = query.Query(client, project, metric_type=metric_id, end_time=None, days=0, hours=0, minutes=minutes)
 
-    dataframe = req.as_dataframe()
+    filt = req._filter
+    filt = str(filt) + ' AND metadata.user_labels.lbnref="' + lbnref + '"'
+    req._filter = filt
+
+    delta = datetime.timedelta(days=0, hours=0, minutes=minutes)
+    seconds = int(delta.total_seconds())
+    req = req.align('ALIGN_MEAN', seconds=seconds)
+
+    try:
+        dataframe = req.as_dataframe()
+    except Exception:
+        return(json.dumps({'error': 'problem aligning'}))
 
     return dataframe.unstack(level=0).to_json(orient='table')
 
@@ -76,6 +89,16 @@ def main():
     if args_dict['version']:
         print(version())
         return 0
+
+    if not args_dict['lbnref']:
+        error('--lbnref not specified')
+    else:
+        lbnref = args_dict['lbnref']
+
+    # if not args_dict['hostname']:
+    #     error('--hostname not specified')
+    # else:
+    #     host = args_dict['hostname']
 
     if not args_dict['project']:
         error('--project not specified')
@@ -137,12 +160,22 @@ def main():
     exp_metrics = dict()
 
     for metric in metrics_list[service]:
-        arrkeysdict = perform_query(client, project_id, metric, 5)
+        metr = metric.split('/')
+        family = metr[0]
+        metri = '/'.join(metr[1:])
+        # ret_msg = lbnref + ' - ' + family + '[' + metri + '] '
+        ret_msg = '- ' + family + '[' + metri + '] '
+        arrkeysdict = perform_query(client, project_id, metric, 5, lbnref)
         exp_metrics['metric'] = metric
         exp_metrics['data'] = json.loads(arrkeysdict)
+        try:
+            ret_msg += str(exp_metrics['data']['data'][0]['values'])
+        except:
+            ret_msg += 'ERROR READING METRIC'
         arr_metrics.append(exp_metrics)
+        print(ret_msg)
 
-    print(json.dumps(arr_metrics))
+    # print(json.dumps(arr_metrics))
     return 0
 
 

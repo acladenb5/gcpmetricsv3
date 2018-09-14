@@ -317,43 +317,43 @@ cloudiot:
 - cloudiot.googleapis.com/device/received_bytes_count
 - cloudiot.googleapis.com/device/sent_bytes_count
 cloudsql:
-- cloudsql.googleapis.com/database/auto_failover_request_count
-- cloudsql.googleapis.com/database/available_for_failover
-- cloudsql.googleapis.com/database/cpu/reserved_cores
-- cloudsql.googleapis.com/database/cpu/usage_time
+# - cloudsql.googleapis.com/database/auto_failover_request_count
+# - cloudsql.googleapis.com/database/available_for_failover
+# - cloudsql.googleapis.com/database/cpu/reserved_cores
+# - cloudsql.googleapis.com/database/cpu/usage_time
 - cloudsql.googleapis.com/database/cpu/utilization
-- cloudsql.googleapis.com/database/disk/bytes_used
+# - cloudsql.googleapis.com/database/disk/bytes_used
 - cloudsql.googleapis.com/database/disk/quota
-- cloudsql.googleapis.com/database/disk/read_ops_count
+# - cloudsql.googleapis.com/database/disk/read_ops_count
 - cloudsql.googleapis.com/database/disk/utilization
-- cloudsql.googleapis.com/database/disk/write_ops_count
+# - cloudsql.googleapis.com/database/disk/write_ops_count
 - cloudsql.googleapis.com/database/memory/quota
-- cloudsql.googleapis.com/database/memory/usage
+# - cloudsql.googleapis.com/database/memory/usage
 - cloudsql.googleapis.com/database/memory/utilization
-- cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_dirty
-- cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_free
-- cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_total
-- cloudsql.googleapis.com/database/mysql/innodb_data_fsyncs
-- cloudsql.googleapis.com/database/mysql/innodb_os_log_fsyncs
-- cloudsql.googleapis.com/database/mysql/innodb_pages_read
-- cloudsql.googleapis.com/database/mysql/innodb_pages_written
-- cloudsql.googleapis.com/database/mysql/queries
-- cloudsql.googleapis.com/database/mysql/questions
-- cloudsql.googleapis.com/database/mysql/received_bytes_count
-- cloudsql.googleapis.com/database/mysql/replication/available_for_failover
-- cloudsql.googleapis.com/database/mysql/replication/seconds_behind_master
-- cloudsql.googleapis.com/database/mysql/replication/slave_io_running
-- cloudsql.googleapis.com/database/mysql/replication/slave_sql_running
-- cloudsql.googleapis.com/database/mysql/sent_bytes_count
-- cloudsql.googleapis.com/database/network/connections
-- cloudsql.googleapis.com/database/network/received_bytes_count
-- cloudsql.googleapis.com/database/network/sent_bytes_count
-- cloudsql.googleapis.com/database/postgresql/num_backends
-- cloudsql.googleapis.com/database/postgresql/replication/replica_byte_lag
-- cloudsql.googleapis.com/database/postgresql/transaction_count
+# - cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_dirty
+# - cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_free
+# - cloudsql.googleapis.com/database/mysql/innodb_buffer_pool_pages_total
+# - cloudsql.googleapis.com/database/mysql/innodb_data_fsyncs
+# - cloudsql.googleapis.com/database/mysql/innodb_os_log_fsyncs
+# - cloudsql.googleapis.com/database/mysql/innodb_pages_read
+# - cloudsql.googleapis.com/database/mysql/innodb_pages_written
+# - cloudsql.googleapis.com/database/mysql/queries
+# - cloudsql.googleapis.com/database/mysql/questions
+# - cloudsql.googleapis.com/database/mysql/received_bytes_count
+# - cloudsql.googleapis.com/database/mysql/replication/available_for_failover
+# - cloudsql.googleapis.com/database/mysql/replication/seconds_behind_master
+# - cloudsql.googleapis.com/database/mysql/replication/slave_io_running
+# - cloudsql.googleapis.com/database/mysql/replication/slave_sql_running
+# - cloudsql.googleapis.com/database/mysql/sent_bytes_count
+# - cloudsql.googleapis.com/database/network/connections
+# - cloudsql.googleapis.com/database/network/received_bytes_count
+# - cloudsql.googleapis.com/database/network/sent_bytes_count
+# - cloudsql.googleapis.com/database/postgresql/num_backends
+# - cloudsql.googleapis.com/database/postgresql/replication/replica_byte_lag
+# - cloudsql.googleapis.com/database/postgresql/transaction_count
 - cloudsql.googleapis.com/database/state
 - cloudsql.googleapis.com/database/up
-- cloudsql.googleapis.com/database/uptime
+# - cloudsql.googleapis.com/database/uptime
 cloudtasks:
 - cloudtasks.googleapis.com/api/request_count
 - cloudtasks.googleapis.com/queue/task_attempt_count
@@ -499,46 +499,46 @@ interconnect:
 - interconnect.googleapis.com/network/interconnect/send_errors_count
 - interconnect.googleapis.com/network/interconnect/sent_bytes_count
 - interconnect.googleapis.com/network/interconnect/sent_unicast_packets_count
-kubernetes.io:
-- kubernetes.io/container/accelerator/duty_cycle
-- kubernetes.io/container/accelerator/memory_total
-- kubernetes.io/container/accelerator/memory_used
-- kubernetes.io/container/accelerator/request
-- kubernetes.io/container/cpu/core_usage_time
-- kubernetes.io/container/cpu/limit_cores
-- kubernetes.io/container/cpu/limit_utilization
-- kubernetes.io/container/cpu/request_cores
-- kubernetes.io/container/cpu/request_utilization
-- kubernetes.io/container/ephemeral_storage/limit_bytes
-- kubernetes.io/container/ephemeral_storage/request_bytes
-- kubernetes.io/container/ephemeral_storage/used_bytes
-- kubernetes.io/container/memory/limit_bytes
-- kubernetes.io/container/memory/limit_utilization
-- kubernetes.io/container/memory/request_bytes
-- kubernetes.io/container/memory/request_utilization
-- kubernetes.io/container/memory/used_bytes
-- kubernetes.io/container/restart_count
-- kubernetes.io/container/uptime
-- kubernetes.io/node/cpu/allocatable_cores
-- kubernetes.io/node/cpu/allocatable_utilization
-- kubernetes.io/node/cpu/core_usage_time
-- kubernetes.io/node/cpu/total_cores
-- kubernetes.io/node/ephemeral_storage/allocatable_bytes
-- kubernetes.io/node/ephemeral_storage/total_bytes
-- kubernetes.io/node/ephemeral_storage/used_bytes
-- kubernetes.io/node/memory/allocatable_bytes
-- kubernetes.io/node/memory/allocatable_utilization
-- kubernetes.io/node/memory/total_bytes
-- kubernetes.io/node/memory/used_bytes
-- kubernetes.io/node/network/received_bytes_count
-- kubernetes.io/node/network/sent_bytes_count
-- kubernetes.io/node_daemon/cpu/core_usage_time
-- kubernetes.io/node_daemon/memory/used_bytes
-- kubernetes.io/pod/network/received_bytes_count
-- kubernetes.io/pod/network/sent_bytes_count
-- kubernetes.io/pod/volume/total_bytes
-- kubernetes.io/pod/volume/used_bytes
-- kubernetes.io/pod/volume/utilization
+# kubernetes.io:
+# - kubernetes.io/container/accelerator/duty_cycle
+# - kubernetes.io/container/accelerator/memory_total
+# - kubernetes.io/container/accelerator/memory_used
+# - kubernetes.io/container/accelerator/request
+# - kubernetes.io/container/cpu/core_usage_time
+# - kubernetes.io/container/cpu/limit_cores
+# - kubernetes.io/container/cpu/limit_utilization
+# - kubernetes.io/container/cpu/request_cores
+# - kubernetes.io/container/cpu/request_utilization
+# - kubernetes.io/container/ephemeral_storage/limit_bytes
+# - kubernetes.io/container/ephemeral_storage/request_bytes
+# - kubernetes.io/container/ephemeral_storage/used_bytes
+# - kubernetes.io/container/memory/limit_bytes
+# - kubernetes.io/container/memory/limit_utilization
+# - kubernetes.io/container/memory/request_bytes
+# - kubernetes.io/container/memory/request_utilization
+# - kubernetes.io/container/memory/used_bytes
+# - kubernetes.io/container/restart_count
+# - kubernetes.io/container/uptime
+# - kubernetes.io/node/cpu/allocatable_cores
+# - kubernetes.io/node/cpu/allocatable_utilization
+# - kubernetes.io/node/cpu/core_usage_time
+# - kubernetes.io/node/cpu/total_cores
+# - kubernetes.io/node/ephemeral_storage/allocatable_bytes
+# - kubernetes.io/node/ephemeral_storage/total_bytes
+# - kubernetes.io/node/ephemeral_storage/used_bytes
+# - kubernetes.io/node/memory/allocatable_bytes
+# - kubernetes.io/node/memory/allocatable_utilization
+# - kubernetes.io/node/memory/total_bytes
+# - kubernetes.io/node/memory/used_bytes
+# - kubernetes.io/node/network/received_bytes_count
+# - kubernetes.io/node/network/sent_bytes_count
+# - kubernetes.io/node_daemon/cpu/core_usage_time
+# - kubernetes.io/node_daemon/memory/used_bytes
+# - kubernetes.io/pod/network/received_bytes_count
+# - kubernetes.io/pod/network/sent_bytes_count
+# - kubernetes.io/pod/volume/total_bytes
+# - kubernetes.io/pod/volume/used_bytes
+# - kubernetes.io/pod/volume/utilization
 loadbalancing:
 - loadbalancing.googleapis.com/https/backend_latencies
 - loadbalancing.googleapis.com/https/backend_request_bytes_count
