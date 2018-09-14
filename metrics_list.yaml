@@ -351,7 +351,7 @@ cloudsql:
 # - cloudsql.googleapis.com/database/postgresql/num_backends
 # - cloudsql.googleapis.com/database/postgresql/replication/replica_byte_lag
 # - cloudsql.googleapis.com/database/postgresql/transaction_count
-- cloudsql.googleapis.com/database/state
+# - cloudsql.googleapis.com/database/state
 - cloudsql.googleapis.com/database/up
 # - cloudsql.googleapis.com/database/uptime
 cloudtasks:
