@@ -77,7 +77,7 @@ def perform_query(client, project, metric_id, minutes, lbnref):
     try:
         dataframe = req.as_dataframe()
     except Exception:
-        return(json.dumps({'error': 'problem aligning'}))
+        return json.dumps({'error': 'problem aligning'})
 
     return dataframe.unstack(level=0).to_json(orient='table')
 
