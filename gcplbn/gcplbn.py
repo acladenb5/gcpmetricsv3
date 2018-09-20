@@ -122,7 +122,7 @@ def main():
         error('--service not specified')
 
     project_id = args_dict['project']
-    keyfile_name = 'keyfiles/' + project_id + '.json'
+    # keyfile_name = 'keyfiles/' + project_id + '.json'
 
     # if not args_dict['privatekeyid']:
     #     error('--privatekeyid not specified')
