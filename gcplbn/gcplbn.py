@@ -27,15 +27,15 @@ PARSER = argparse.ArgumentParser(
 )
 
 PARSER.add_argument("--version", default=None, action='store_true', help='Print gcpmetics version and exit.')
-PARSER.add_argument('--keydir', help='Directory where keyfiles are stores', metavar='KEYDIR')
-PARSER.add_argument('--keyfile', help='Goolge Cloud Platform service account key file.', metavar='KEYFILE')
-PARSER.add_argument('--project', help='Project ID.', metavar='ID')
-PARSER.add_argument('--service', help='Cloud service to check', metavar='SVC')
+PARSER.add_argument('--keydir', help='Directory where keyfiles are stores (no trailing "/")', metavar='KEYDIR', required=True)
+PARSER.add_argument('--keyfile', help='Goolge Cloud Platform service account key file.', metavar='KEYFILE', required=True)
+PARSER.add_argument('--project', help='Project ID.', metavar='PROJECT_ID', required=True)
+PARSER.add_argument('--service', help='Cloud service to check', metavar='SERVICE', required=True)
 # PARSER.add_argument('--privatekeyid', help='Private key ID', metavar='PKID')
 # PARSER.add_argument('--privatekey', help='Private key content', metavar='PKC')
 # PARSER.add_argument('--clientid', help='Client ID', metavar='CID')
 # PARSER.add_argument('--serviceaccount', help='Service account for the project', metavar='SVCACC')
-PARSER.add_argument('--lbnref', help='LBNREF to query', metavar='LBNREF')
+PARSER.add_argument('--lbnref', help='LBNREF to query', metavar='LBNREF', required=True)
 # PARSER.add_argument('--hostname', help='Host', metavar='HOST')
 
 # KEYSRCDIR = '/etc/gcpmonitoring/keysfiles'

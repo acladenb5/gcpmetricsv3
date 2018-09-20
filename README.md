@@ -41,4 +41,11 @@ GCP_METRICS_DIR="/opt/scripts/python"
 
 ## Usage
 
+```
+gcpmetrics.sh --keydir KEYDIR --keyfile KEYFILE --project PROJECT_ID --service SERVICE --lbnref LBNREF
+```
 
+Example:
+```
+/opt/zabbix/gcp/gcpmonitoring.sh --keydir /opt/zabbix/gcp/keys --keyfile lbn-labo.json --project lbn-labo --service cloudsql
+```
