@@ -179,8 +179,8 @@ def main():
         metr = metric.split('/')
         family = metr[0]
         metri = '/'.join(metr[1:])
-        # ret_msg = lbnref + ' - ' + family + '[' + metri + '] '
-        ret_msg = '- ' + family + '[' + metri + '] '
+        ret_msg = lbnref + ' ' + family + '[' + metri + '] '
+        # ret_msg = '- ' + family + '[' + metri + '] '
         arrkeysdict = perform_query(client, project_id, metric, 5, lbnref)
         exp_metrics['metric'] = metric
         exp_metrics['data'] = json.loads(arrkeysdict)
