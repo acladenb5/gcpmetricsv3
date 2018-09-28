@@ -11,8 +11,8 @@ install:
 - ./build.sh
 - pip  install -r requirements.txt
 script: 
-  - pylint *.py gcpmetricsv3/*.py gcplbn/*.py
-  - flake8 *.py gcpmetricsv3/*.py gcplbn/*.py
+  - pylint *.py  gcplbn/*.py
+  - flake8 *.py  gcplbn/*.py
 #deploy:
 #  skip_cleanup: true
 #  provider: pypi
