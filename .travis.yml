@@ -8,7 +8,7 @@ python:
 - '3.6'
 install:
 - python -V
-- ./build.sh
+# - ./build.sh
 - pip  install -r requirements.txt
 script: 
   - pylint *.py  gcplbn/*.py
