@@ -31,14 +31,7 @@ PARSER.add_argument('--keydir', help='Directory where keyfiles are stores (no tr
 PARSER.add_argument('--keyfile', help='Goolge Cloud Platform service account key file.', metavar='KEYFILE', required=True)
 PARSER.add_argument('--project', help='Project ID.', metavar='PROJECT_ID', required=True)
 PARSER.add_argument('--service', help='Cloud service to check', metavar='SERVICE', required=True)
-# PARSER.add_argument('--privatekeyid', help='Private key ID', metavar='PKID')
-# PARSER.add_argument('--privatekey', help='Private key content', metavar='PKC')
-# PARSER.add_argument('--clientid', help='Client ID', metavar='CID')
-# PARSER.add_argument('--serviceaccount', help='Service account for the project', metavar='SVCACC')
 PARSER.add_argument('--lbnref', help='LBNREF to query', metavar='LBNREF', required=True)
-# PARSER.add_argument('--hostname', help='Host', metavar='HOST')
-
-# KEYSRCDIR = '/etc/gcpmonitoring/keysfiles'
 
 
 def error(message):
@@ -96,11 +89,6 @@ def main():
     else:
         lbnref = args_dict['lbnref']
 
-    # if not args_dict['hostname']:
-    #     error('--hostname not specified')
-    # else:
-    #     host = args_dict['hostname']
-
     if not args_dict['keydir']:
         error('--keydir not specified')
     else:
@@ -122,45 +110,7 @@ def main():
         error('--service not specified')
 
     project_id = args_dict['project']
-    # keyfile_name = 'keyfiles/' + project_id + '.json'
 
-    # if not args_dict['privatekeyid']:
-    #     error('--privatekeyid not specified')
-
-    # if not args_dict['privatekey']:
-    #     error('--privatekey not specified')
-
-    # if not args_dict['clientid']:
-    #     error('--clientid not specified')
-
-    # if args_dict['serviceaccount']:
-    #     svc_account = args_dict['serviceaccount']
-    # else:
-    #     svc_account = 'lbn-monitoring'
-
-    # private_key_id = args_dict['privatekeyid']
-    # private_key = args_dict['privatekey']
-    # private_key = private_key.replace('\\n', '\n')
-    # client_email = svc_account + '@' + project_id + '.iam.gserviceaccount.com'
-    # client_x509_cert_url = 'https://www.googleapis.com/robot/v1/metadata/x509/' + svc_account + '%40' + project_id + '.iam.gserviceaccount.com'
-    # client_id = args_dict['clientid']
-
-    # KEYFILE = {'type': 'service_account',
-    #            'project_id': project_id,
-    #            'private_key_id': private_key_id,
-    #            'private_key': private_key,
-    #            'client_email': client_email,
-    #            'client_id': client_id,
-    #            'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
-    #            'token_uri': 'https://oauth2.googleapis.com/token',
-    #            'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
-    #            'client_x509_cert_url': client_x509_cert_url}
-
-    # with open(keyfile_name, 'w') as fp:
-    #     json.dump(KEYFILE, fp)
-    #     fp.close()
-
-    # credentials = service_account.Credentials.from_service_account_file(keyfile_name)
     credentials = service_account.Credentials.from_service_account_file(keyfile)
     client = monitoring_v3.MetricServiceClient(credentials=credentials)
 
@@ -180,7 +130,6 @@ def main():
         family = metr[0]
         metri = '/'.join(metr[1:])
         ret_msg = lbnref + ' ' + family + '[' + metri + '] '
-        # ret_msg = '- ' + family + '[' + metri + '] '
         arrkeysdict = perform_query(client, project_id, metric, 5, lbnref)
         exp_metrics['metric'] = metric
         exp_metrics['data'] = json.loads(arrkeysdict)
@@ -190,8 +139,6 @@ def main():
             ret_msg += 'ERROR READING METRIC'
         arr_metrics.append(exp_metrics)
         print(ret_msg)
-
-    # print(json.dumps(arr_metrics))
     return 0
 
 
